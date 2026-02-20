@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRAND GAMING - PRO</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif}
+body{background:radial-gradient(circle at top,#0f0f1a,#000);color:#fff;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
+header{padding:25px;text-align:center;}
+header h1{font-size:34px;background:linear-gradient(90deg,#00f0ff,#00ff88);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.version{font-size:13px;opacity:.6;margin-top:5px;}
+.container{width:95%;max-width:520px;background:rgba(255,255,255,0.05);padding:20px;border-radius:18px;box-shadow:0 0 20px rgba(0,255,255,.15);margin-bottom:20px;}
+.info-box{font-size:13px;line-height:1.7;margin-bottom:15px;opacity:.85;}
+label{font-size:13px;opacity:.8;}
+select,button{width:100%;padding:10px;margin-top:8px;margin-bottom:12px;border:none;border-radius:10px;}
+select{background:#111;color:#fff;}
+button{background:linear-gradient(90deg,#00f0ff,#00ff88);color:#000;font-weight:bold;cursor:pointer;}
+.hidden{display:none;}
+.progress{height:8px;background:#111;border-radius:10px;overflow:hidden;margin-top:15px;}
+.bar{height:100%;width:0%;background:linear-gradient(90deg,#00ff88,#00f0ff);transition:width .2s;}
+.scan-text{margin-top:10px;font-size:13px;}
+.mode-btn{background:linear-gradient(90deg,#ff00cc,#3333ff);color:#fff;}
+.telegram{background:linear-gradient(90deg,#0088cc,#00c6ff);color:#fff;}
+.result{margin-top:15px;padding:15px;background:rgba(0,255,150,.1);border-radius:12px;}
+footer{margin-top:auto;padding:15px;font-size:12px;opacity:.5;}
+.circle{position:relative;}
+</style>
+</head>
+<body>
+
+<header>
+<h1>GRAND GAMING</h1>
+<div class="version">Server Analyzer PRO v5.7</div>
+</header>
+
+<!-- MAIN PAGE -->
+<div class="container" id="mainPage">
+<div class="info-box">
+IP: 185.XX.XX.XX <br>
+Status: ONLINE ✅ <br>
+Online Users: <span id="users"></span> <br>
+Server Time: <span id="time"></span> <br>
+Uptime: 99.8% <br>
+Average Ping: 32ms
+</div>
+<label>Select Device</label>
+<select id="device"><option value="">-- Select --</option><option>Android</option><option>iPhone</option></select>
+<label>Select Server</label>
+<select id="server"><option value="">-- Select --</option><option>Europe</option><option>Asia</option><option>Africa</option><option>America</option></select>
+<button onclick="startAnalyze()">CONFIRM</button>
+</div>
+
+<!-- ANALYZER PAGE -->
+<div class="container hidden" id="analyzePage">
+<h3>Analyzing Connection...</h3>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="scan-text" id="scanText">Initializing...</div>
+<button id="continueBtn" class="hidden" onclick="showModes()">CONTINUE</button>
+</div>
+
+<!-- MODES PAGE -->
+<div class="container hidden" id="modesPage">
+<h3>SCAN MODES</h3>
+<button class="mode-btn" onclick="runScan('EPIC')">EPIC BOX SCAN</button>
+<button class="mode-btn" onclick="runScan('SHOWTIME')">SHOWTIME BOX SCAN</button>
+<button class="mode-btn" onclick="runScan('POTW')">POTW BOX SCAN</button>
+<a href="https://t.me/Grand_Gaming10" target="_blank"><button class="telegram">JOIN TELEGRAM CHANNEL</button></a>
+<button onclick="goHome()">BACK</button>
+</div>
+
+<!-- FINAL SCAN PAGE -->
+<div class="container hidden" id="finalScan">
+<h3 id="scanTitle"></h3>
+<div style="display:flex;justify-content:center;margin-top:20px;">
+  <div class="circle">
+    <svg width="160" height="160">
+      <circle cx="80" cy="80" r="70" stroke="#111" stroke-width="12" fill="none"/>
+      <circle id="progressCircle" cx="80" cy="80" r="70" stroke="url(#grad)" stroke-width="12" fill="none" stroke-linecap="round" stroke-dasharray="440" stroke-dashoffset="440"/>
+      <defs><linearGradient id="grad"><stop offset="0%" stop-color="#00ff88"/><stop offset="100%" stop-color="#00f0ff"/></linearGradient></defs>
+    </svg>
+    <div id="percentText" style="position:absolute;margin-top:-110px;font-size:26px;font-weight:bold;">0%</div>
+  </div>
+</div>
+<div class="result hidden" id="resultBox">
+<p id="resultText"></p>
+<button onclick="showModes()">BACK TO MODES</button>
+</div>
+</div>
+
+<footer>© 2026 GRAND GAMING</footer>
+
+<script>
+let lastScanTime = 0;
+function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+setInterval(()=>{document.getElementById("users").innerText=rand(1200,2500);document.getElementById("time").innerText=new Date().toLocaleTimeString();},1000);
+
+function startAnalyze(){
+let device=document.getElementById("device").value;let server=document.getElementById("server").value;
+if(!device||!server){alert("Select device & server");return;}
+document.getElementById("mainPage").classList.add("hidden");document.getElementById("analyzePage").classList.remove("hidden");
+let steps=["Connecting to server...","Checking compatibility...","Analyzing network...","Optimizing latency...","Finalizing..."];
+let bar=document.getElementById("bar");let text=document.getElementById("scanText");let progress=0,i=0;
+let interval=setInterval(()=>{
+progress+=5;bar.style.width=progress+"%";
+if(progress%20===0&&i<steps.length){text.innerText=steps[i];i++;}
+if(progress>=100){clearInterval(interval);text.innerText="Analysis Complete ✔";document.getElementById("continueBtn").classList.remove("hidden");}
+},150);
+}
+
+function showModes(){document.getElementById("analyzePage").classList.add("hidden");document.getElementById("finalScan").classList.add("hidden");document.getElementById("modesPage").classList.remove("hidden");}
+function goHome(){document.getElementById("modesPage").classList.add("hidden");document.getElementById("mainPage").classList.remove("hidden");}
+
+function runScan(type){
+let now = Date.now();
+if(now - lastScanTime < 120000){alert("⏱ يجب الانتظار دقيقتين قبل إجراء Scan جديد!");return;}
+lastScanTime = now;
+
+document.getElementById("modesPage").classList.add("hidden");
+document.getElementById("finalScan").classList.remove("hidden");
+document.getElementById("scanTitle").innerText = type + " SCAN";
+document.getElementById("resultBox").classList.add("hidden");
+
+let circle = document.getElementById("progressCircle");
+let percentText = document.getElementById("percentText");
+let circumference = 440;
+let percent = 0;
+
+let target = generateSmartPercentage();
+playScanSound();
+
+let interval = setInterval(()=>{
+percent++;
+let offset = circumference - (percent/100)*circumference;
+circle.style.strokeDashoffset = offset;
+percentText.innerText = percent+"%";
+if(percent >= target){clearInterval(interval);finishScanResult(percent);}
+},40);
+}
+
+function generateSmartPercentage(){
+let randNum = Math.random()*100;
+if(randNum < 50) return randomBetween(55,65);
+if(randNum < 75) return randomBetween(70,79);
+if(randNum < 93) return randomBetween(80,84);
+if(randNum < 98) return randomBetween(85,89);
+if(randNum < 99.5) return randomBetween(90,94);
+return 95;
+}
+
+function finishScanResult(percent){
+let text = "";
+if(percent>=55 && percent<=65){text="❌ سئ — المستحسن التجربة مرة أخرى في وقت لاحق.";}
+else if(percent>=70 && percent<=79){text="⚠ مقبول — ولكن يستحسن التجربة مرة أخرى في وقت لاحق.";}
+else if(percent>=80 && percent<=84){text="✅ جيد — ومضمون بنسبة كبيرة ولكن ليس 100%.";}
+else if(percent>=85 && percent<=89){text="✅ جيد — صعب الحدوث، مضمون جزئيًا.";}
+else if(percent>=90 && percent<=94){text="🔥 جيد جداً — ومضمون.";}
+else if(percent==95){text="💎 ممتاز جداً — نتيجة نادرة جداً!";}
+document.getElementById("resultText").innerText = text;
+document.getElementById("resultBox").classList.remove("hidden");
+}
+
+function randomBetween(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+function playScanSound(){let audio=new Audio("https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3");audio.volume=0.3;audio.play();}
+</script>
+
+</body>
+</html>
