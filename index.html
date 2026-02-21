@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRAND GAMING - PRO</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif}
+body{background:radial-gradient(circle at top,#0f0f1a,#000);color:#fff;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
+header{padding:25px;text-align:center;}
+header h1{font-size:34px;background:linear-gradient(90deg,#00f0ff,#00ff88);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.container{width:95%;max-width:520px;background:rgba(255,255,255,0.05);padding:20px;border-radius:18px;box-shadow:0 0 25px rgba(0,255,255,.15);margin-bottom:20px;text-align:center;position:relative;}
+label{font-size:13px;opacity:.8;}
+select,button{width:100%;padding:10px;margin-top:8px;margin-bottom:12px;border:none;border-radius:10px;cursor:pointer;font-weight:bold;}
+select{background:#111;color:#fff;}
+button{background:linear-gradient(90deg,#00ff88,#00f0ff);color:#000;}
+.hidden{display:none;}
+.mode-btn{margin-bottom:10px;font-weight:bold;font-size:16px;border-radius:12px;color:#fff;transition:0.3s;box-shadow:0 0 20px rgba(0,255,150,.4);}
+.epic-btn{background:linear-gradient(90deg,#b58900,#00a500);}
+.showtime-btn{background:linear-gradient(90deg,#ff00cc,#3333ff);}
+.potw-btn{background:#008000;}
+.mode-btn:hover{transform:scale(1.05);box-shadow:0 0 30px rgba(0,255,150,.6);}
+.telegram{background:#0088cc;color:#fff;margin-top:5px;}
+.youtube{background:#FF0000;color:#fff;margin-top:5px;}
+.tiktok{background:#000;color:#fff;margin-top:5px;}
+.circle-wrapper{position:relative;width:220px;height:220px;margin:30px auto;display:flex;align-items:center;justify-content:center;}
+.rotating-ring{width:220px;height:220px;border-radius:50%;border:10px solid rgba(0,255,255,0.1);border-top:10px solid #00f0ff;border-right:10px solid #00ff88;animation:spin 1.5s linear infinite;box-shadow:0 0 60px rgba(0,255,255,.5), inset 0 0 40px rgba(0,255,255,.2);}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.filled-circle{position:absolute;width:200px;height:200px;border-radius:50%;top:10px;left:10px;z-index:-1;transition:background 0.8s;}
+.percent-text{position:absolute;font-size:34px;font-weight:800;background:linear-gradient(90deg,#00ff88,#00f0ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.status-table{margin-top:15px;text-align:left;color:#00ff88;font-size:13px;line-height:2;}
+.status-table div{position:relative;}
+.status-table div span{position:absolute;right:-20px;color:#00ff88;font-weight:bold;opacity:0;animation:checkFade 0.5s forwards;}
+@keyframes checkFade{0%{opacity:0;transform:scale(0);}100%{opacity:1;transform:scale(1);}}
+.result-text{margin-top:10px;font-size:16px;font-weight:bold;}
+.wait-container{position:absolute;top:10px;left:50%;transform:translateX(-50%);text-align:center;}
+.wait-msg{display:block;background:rgba(0,255,0,0.15);color:#00ff88;padding:12px;margin-top:5px;border-radius:10px;font-weight:bold;}
+.booster-btn{width:160px;height:160px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:bold;font-size:15px;margin:20px auto;cursor:pointer;transition:0.3s;box-shadow:0 0 35px rgba(255,100,0,0.8);background: radial-gradient(circle,#ff8800,#ff0000);color:#fff;}
+.booster-btn:hover{transform:scale(1.1);box-shadow:0 0 45px rgba(255,80,0,1);}
+footer{margin-top:auto;padding:15px;font-size:12px;opacity:.5;}
+</style>
+</head>
+<body>
+
+<header><h1>GRAND GAMING</h1></header>
+
+<div id="waitContainer" class="wait-container hidden">
+<div id="countdownTimer" style="font-size:24px;font-weight:bold;"></div>
+<div id="waitText" class="wait-msg">⏱ يُستحسن الانتظار والمحاولة لاحقًا</div>
+</div>
+
+<!-- MAIN PAGE -->
+<div class="container" id="mainPage">
+<label>Select Device</label>
+<select id="device">
+<option value="">-- Select --</option>
+<option>Android</option>
+<option>iPhone</option>
+</select>
+
+<label>Select Server</label>
+<select id="server">
+<option value="">-- Select --</option>
+<option>Europe</option>
+<option>Asia</option>
+<option>Africa</option>
+<option>America</option>
+</select>
+
+<div style="margin-top:15px;font-size:13px;opacity:.8">
+IP: 185.XX.XX.XX <br>
+Status: ONLINE ✅ <br>
+Online Users: <span id="users"></span> <br>
+Server Time: <span id="time"></span> <br>
+Uptime: 99.8% <br>
+Average Ping: 32ms
+</div>
+
+<button onclick="startAnalyze()">CONFIRM</button>
+</div>
+
+<!-- ANALYZING PAGE -->
+<div class="container hidden" id="analyzePage">
+<h3>Analyzing Connection...</h3>
+<div class="progress" style="height:8px;background:#111;border-radius:10px;overflow:hidden;margin-top:15px;">
+  <div class="bar" id="bar" style="height:100%;width:0%;background:linear-gradient(90deg,#00ff88,#00f0ff);transition:width .2s;"></div>
+</div>
+<p id="analyzeText">Initializing...</p>
+<button id="continueBtn" class="hidden" onclick="showModes()">CONTINUE</button>
+</div>
+
+<!-- MODES PAGE -->
+<div class="container hidden" id="modesPage">
+<h3>SCAN MODES</h3>
+
+<button class="mode-btn epic-btn" onclick="runScan('EPIC')">EPIC BOX SCAN</button>
+<button class="mode-btn showtime-btn" onclick="runScan('SHOWTIME')">SHOWTIME BOX SCAN</button>
+<button class="mode-btn potw-btn" onclick="runScan('POTW')">POTW BOX SCAN</button>
+
+<div class="booster-btn" onclick="window.location.href='https://swiftlnx.com/Grand_Gaming'">EPIC BOOSTER APP</div>
+
+<a href="https://t.me/efootball029" target="_blank"><button class="telegram">JOIN TELEGRAM</button></a>
+<a href="https://youtube.com/@grandgaming15" target="_blank"><button class="youtube">JOIN YOUTUBE</button></a>
+<a href="https://www.tiktok.com/@grand_gaming10" target="_blank"><button class="tiktok">JOIN TIKTOK</button></a>
+
+<button onclick="goHome()">BACK</button>
+</div>
+
+<!-- SCAN PAGE -->
+<div class="container hidden" id="scanPage">
+<h3 id="scanTitle"></h3>
+
+<div class="circle-wrapper" id="circleWrapper">
+<div id="filledCircle" class="filled-circle"></div>
+<div id="rotatingRing" class="rotating-ring"></div>
+<div id="percentText" class="percent-text"></div>
+</div>
+
+<div id="scanResultText" class="result-text"></div>
+<div class="status-table" id="statusTable"></div>
+
+<button onclick="showModes()">BACK TO MODES</button>
+</div>
+
+<footer>© 2026 GRAND GAMING</footer>
+
+<script>
+let rand=(min,max)=>Math.floor(Math.random()*(max-min+1))+min;
+let lastScanTime=0;
+setInterval(()=>{
+document.getElementById("users").innerText=rand(1200,2500);
+document.getElementById("time").innerText=new Date().toLocaleTimeString();
+},1000);
+
+function startAnalyze(){
+let device=document.getElementById("device").value;
+let server=document.getElementById("server").value;
+if(!device||!server){alert("Select device & server");return;}
+document.getElementById("mainPage").classList.add("hidden");
+document.getElementById("analyzePage").classList.remove("hidden");
+
+let progress=0;
+let bar=document.getElementById("bar");
+let text=document.getElementById("analyzeText");
+
+let interval=setInterval(()=>{
+progress+=5;
+bar.style.width=progress+"%";
+if(progress>=100){
+clearInterval(interval);
+text.innerText="Analysis Complete ✔";
+document.getElementById("continueBtn").classList.remove("hidden");
+}
+},150);
+}
+
+function showModes(){
+document.getElementById("analyzePage").classList.add("hidden");
+document.getElementById("scanPage").classList.add("hidden");
+document.getElementById("modesPage").classList.remove("hidden");
+}
+
+function goHome(){
+document.getElementById("modesPage").classList.add("hidden");
+document.getElementById("mainPage").classList.remove("hidden");
+}
+
+// Generate percentage with probability control
+function generatePercentage(){
+let r=Math.random()*100;
+if(r<87) return rand(67,84); // 87% chance
+if(r>=87 && r<92) return rand(35,66); // rare 8%
+return rand(86,87); // very rare 5%
+}
+
+function runScan(type){
+let now=Date.now();
+if(now-lastScanTime<300000){
+startCountdown(Math.ceil((300000-(now-lastScanTime))/1000));
+return;
+}
+lastScanTime=now;
+
+document.getElementById("modesPage").classList.add("hidden");
+document.getElementById("scanPage").classList.remove("hidden");
+document.getElementById("scanTitle").innerText=type+" SCAN";
+
+let wrapper=document.getElementById("circleWrapper");
+let ring=document.getElementById("rotatingRing");
+let filled=document.getElementById("filledCircle");
+let percentText=document.getElementById("percentText");
+let statusTable=document.getElementById("statusTable");
+let resultText=document.getElementById("scanResultText");
+let waitContainer=document.getElementById("waitContainer");
+
+percentText.innerText="";
+resultText.innerText="";
+statusTable.innerHTML="";
+filled.style.background="none";
+waitContainer.classList.add("hidden");
+
+let messages=[
+"Connecting to Server...",
+"Authenticating Credentials...",
+"Establishing Secure Channel...",
+"Syncing Encrypted Data...",
+"Validating Response Keys...",
+"Processing Request...",
+"Analyzing Latency...",
+"Optimizing Routes...",
+"Finalizing Scan..."
+];
+
+let idx=0;
+function showNextMessage(){
+if(idx<messages.length){
+let line=document.createElement("div");
+line.innerHTML=messages[idx].split(" ").join("&nbsp;&nbsp;");
+statusTable.appendChild(line);
+let i=0;
+function typeChar(){
+if(i<messages[idx].length){
+line.innerHTML+=messages[idx][i++];
+setTimeout(typeChar,50);
+}else{
+let check=document.createElement("span");
+check.innerText="✔";
+line.appendChild(check);
+idx++;
+setTimeout(showNextMessage,200);
+}
+}
+typeChar();
+}
+}
+showNextMessage();
+
+setTimeout(()=>{
+let target=generatePercentage();
+percentText.innerText=target+"%";
+
+// Change circle color
+if(target>=35&&target<=49){filled.style.background="red";}
+else if(target>=50&&target<=69){filled.style.background="darkorange";}
+else if(target>=70&&target<=84){filled.style.background="green";}
+else if(target>=86){filled.style.background="#00ff00";}
+
+// Result text
+let text="";
+if(target>=35&&target<=49) text="❌ سئ جدًا — يُستحسن المحاولة لاحقًا.";
+else if(target>=50&&target<=65) text="❌ سئ — يُستحسن التجربة مرة أخرى.";
+else if(target>=66&&target<=75) text="⚠ مقبول — يُفضل التجربة مرة أخرى.";
+else if(target>=76&&target<=83) text="✅ جيد — مضمون بنسبة كبيرة.";
+else if(target>=86) text="✅ ممتاز جدًا — نادر جدًا!";
+
+resultText.innerText=text;
+
+startCountdown(300);
+},20000);
+}
+
+function startCountdown(seconds){
+let container=document.getElementById("waitContainer");
+let timer=document.getElementById("countdownTimer");
+let text=document.getElementById("waitText");
+container.classList.remove("hidden");
+let remaining=seconds;
+timer.innerText=formatTime(remaining);
+
+let interval=setInterval(()=>{
+remaining--;
+if(remaining<=0){clearInterval(interval);container.classList.add("hidden");}
+timer.innerText=formatTime(remaining);
+},1000);
+}
+
+function formatTime(sec){
+let m=Math.floor(sec/60);
+let s=sec%60;
+return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+}
+</script>
+</body>
+</html>
